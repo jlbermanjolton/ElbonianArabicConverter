@@ -52,9 +52,22 @@ public class ConverterTests {
         converter.toArabic();
     }
 
+    @Test(expected = MalformedNumberException.class)
+    public void ElbonianToArabicLowercaseTest() throws MalformedNumberException, ValueOutOfBoundsException {
+        ElbonianArabicConverter converter = new ElbonianArabicConverter("vV");
+        assertEquals(converter.toArabic(), 4);
+        converter = new ElbonianArabicConverter("lL");
+        assertEquals(converter.toArabic(), 40);
+        converter = new ElbonianArabicConverter("dD");
+        assertEquals(converter.toArabic(), 400);
+        converter = new ElbonianArabicConverter("xX");
+        converter.toArabic();
+    }
 
+    @Test(expected = MalformedNumberException.class)
+    public void ElbonianToArabicCapitalOutOfOrderTest() throws MalformedNumberException, ValueOutOfBoundsException {
+        ElbonianArabicConverter converter = new ElbonianArabicConverter("IV");
+        converter.toArabic();
+    }
 
-
-
-    // TODO Add more test cases
 }

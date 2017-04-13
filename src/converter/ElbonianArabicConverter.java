@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.reducing;
 
 /**
  * This class implements a converter that takes a string that represents a number in either the
@@ -39,9 +40,23 @@ public class ElbonianArabicConverter {
      * in the Elbonian number system.
      */
     public ElbonianArabicConverter(String number) throws MalformedNumberException, ValueOutOfBoundsException {
-
+        checkValid();
         // TODO check to see if the number is valid, then set it equal to the string
         this.number = number;
+    }
+
+    private void checkValid() throws MalformedNumberException, ValueOutOfBoundsException {
+        if (isArabic()) {
+
+        } else {
+            checkThreeOfAnyLetter();
+            checkCapitalOutOfOrder();
+
+        }
+    }
+
+    private boolean isArabic() {
+        return false;
     }
 
     /**
@@ -51,8 +66,12 @@ public class ElbonianArabicConverter {
      * @return An arabic value
      */
     public int toArabic() throws MalformedNumberException{
-        checkThreeOfAnyLetter();
         return sumElbonianLetters();
+    }
+
+    private void checkCapitalOutOfOrder() throws MalformedNumberException {
+        // iterate over chars
+        // check each is less or equal to previous
     }
 
     /**
@@ -65,26 +84,19 @@ public class ElbonianArabicConverter {
         return "I";
     }
 
-    private Integer getLetterValue(int letter) {
+    private Integer getLetterValue(String letter) throws MalformedNumberException {
         switch (letter) {
-            case 'M':
-                return 1000;
-            case 'D':
-                return 500;
-            case 'C':
-                return 100;
-            case 'L':
-                return 50;
-            case 'X':
-                return 10;
-            case 'V':
-                return 5;
-            case 'I':
-                return 1;
-
-            //add lower case values, equal to negative of one step down
-            default:
-                return null;
+            case "M": return 1000;
+            case "D": return 500;
+            case "C": return 100;
+            case "L": return 50;
+            case "X": return 10;
+            case "V": return 5;
+            case "I": return 1;
+            case "d": return -100;
+            case "l": return -10;
+            case "v": return -1;
+            default: throw new MalformedNumberException("Unrecognized letter: " + letter);
         }
     }
 
@@ -95,16 +107,18 @@ public class ElbonianArabicConverter {
         }
     }
 
-
-
     private void checkThreeOfLetter(String letter, Long count) throws MalformedNumberException{
         if(count > 3){
             throw new MalformedNumberException(letter + "Occurred more than " + count + " times");
         }
     }
 
-    private int sumElbonianLetters(){
-        return number.chars().map(c -> getLetterValue(c)).sum();
+    private int sumElbonianLetters() throws MalformedNumberException {
+        int sum = 0;
+        for (String letter : number.split("")) {
+            sum += getLetterValue(letter);
+        }
+        return sum;
     }
 
 }
